@@ -1,0 +1,28 @@
+<h4 class="text-center">Menu Inicial</h4>
+
+<form [formGroup]="menuForm" class="form mt-4" (submit)="menu()">
+
+    <button 
+        type="button" 
+        class="btn btn-primary btn-block" 
+        (click)="opcaoUsuario()">
+        Usuário
+    </button>
+
+    <button 
+        type="button" 
+        class="btn btn-primary btn-block"  
+        (click)="opcaoItem()">
+        Item
+    </button>
+
+    <button 
+        type="button" 
+        class="btn btn-primary btn-block"
+        (click)="opcaoCarrinho()">
+        Carrinho
+    </button>
+
+
+</form>
+

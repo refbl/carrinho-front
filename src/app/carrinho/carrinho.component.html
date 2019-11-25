@@ -1,0 +1,48 @@
+<h4 class="text-center">Carrinho</h4>
+
+<form [formGroup]="carrinhoForm" class="form mt-4">
+
+    <div class="form-group">
+            <input
+                class="form-control" 
+                formControlName="email"
+                placeholder="Informe o E-mail do Cliente"
+                autofocus>  
+    
+            <small
+                *ngIf="carrinhoForm.get('email').errors?.required"
+                class="text-danger d-block mt-2">
+                E-mail do Cliente é Obrigatório!
+            </small>
+    </div>
+    <div class="row">
+        <div class="col-md-4 text-center">
+           <button [disabled]="carrinhoForm.invalid" type="button" class="btn btn-primary" (click)="cliente()"> Cliente </button> 
+        </div>
+    </div>
+    <br>
+    
+     <p class="bg-info"> &nbsp; </p>
+
+    <div class="form-group">
+        <label for="item">
+            Itens
+        </label>
+        <select id="selItem" name="selItem" class="form-control" >
+            <option  value=''></option> 
+            <option *ngFor='let item of itens' value='{{ item.id }}'> {{ item.nome }} - {{ item.valor }}</option>
+        </select>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <button type="button" class="btn btn-primary" (click)="adicionarItem()"> Adicionar Item </button> 
+        </div>
+
+        <div class="col-md-8 text-center">
+            <button type="button" class="btn btn-primary" (click)="menu()"> Menu </button> 
+        </div>
+
+    </div>
+
+</form>

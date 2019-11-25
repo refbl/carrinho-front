@@ -1,0 +1,77 @@
+<h4 class="text-center">Item</h4>
+
+<form [formGroup]="itemForm" class="form mt-4">
+
+    <table class='table table-striped'>
+            <tbody class="text-center">
+                <tr>
+                    <th> Nome </th>
+                    <th> Valor </th>
+                    <th> ID </th>
+                </tr>
+                
+                <tr *ngFor='let item of itens'>
+                    <td>{{ item.nome }}</td>
+                    <td>{{ item.valor }}</td>
+                    <td>{{ item.id }}</td>
+                </tr>
+            </tbody>
+    </table>
+
+    <p class="bg-info"> &nbsp; </p>
+
+    <div class="form-group">
+            <input
+                class="form-control" 
+                formControlName="id"
+                type="hidden"
+                ng-value="data" />
+    
+    </div>
+
+    <div class="form-group">
+        <input
+            class="form-control" 
+            formControlName="nome"
+            placeholder="Descrição do Item"
+            autofocus>  
+
+        <small
+            *ngIf="itemForm.get('nome').errors?.required"
+            class="text-danger d-block mt-2">
+            Descrição do Item é Obrigatória!
+        </small>
+    </div>
+
+    <div class="form-group">
+        <input 
+            class="form-control" 
+            formControlName="valor" 
+            placeholder="valor" >
+
+            <small
+            *ngIf="itemForm.get('valor').errors?.required"
+            class="text-danger d-block mt-2">
+            Valor é Obrigatório!
+        </small>
+        
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 text-right">
+            <button [disabled]="itemForm.invalid" type="button" class="btn btn-primary" (click)="incluir()"> Incluir </button> 
+        </div>
+        <div class="col-md-2 text-center">
+            <button [disabled]="itemForm.invalid" type="button" class="btn btn-primary" (click)="alterar()"> Alterar </button>
+        </div>
+        <div class="col-md-2 text-left">
+            <button [disabled]="itemForm.invalid" type="button" class="btn btn-primary" (click)="excluir()"> Excluir </button> 
+        </div>
+
+        <div class="col-md-6 text-center">
+            <button type="button" class="btn btn-primary" (click)="menu()"> Menu </button> 
+        </div>
+
+    </div>
+
+</form>

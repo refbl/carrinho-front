@@ -1,0 +1,77 @@
+<h4 class="text-center">Usuário</h4>
+
+<form [formGroup]="usuarioForm" class="form mt-4">
+
+    <table class='table table-striped'>
+            <tbody class="text-center">
+                <tr>
+                    <th> E-mail </th>
+                    <th> Nome </th>
+                    <th> ID </th>
+                </tr>
+                
+                <tr *ngFor='let usuario of usuarios'>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.nome }}</td>
+                    <td>{{ usuario.id }}</td>
+                </tr>
+            </tbody>
+    </table>
+
+    <p class="bg-info"> &nbsp; </p>
+
+    <div class="form-group">
+            <input
+                class="form-control" 
+                formControlName="id"
+                type="hidden"
+                ng-value="data" />
+    
+    </div>
+
+    <div class="form-group">
+        <input
+            class="form-control" 
+            formControlName="email" 
+            placeholder="E-mail"
+            autofocus>  
+
+        <small
+            *ngIf="usuarioForm.get('email').errors?.required"
+            class="text-danger d-block mt-2">
+            Email é Obrigatório!
+        </small>
+    </div>
+
+    <div class="form-group">
+        <input 
+            class="form-control" 
+            formControlName="nome" 
+            placeholder="Nome Completo" >
+
+            <small
+            *ngIf="usuarioForm.get('nome').errors?.required"
+            class="text-danger d-block mt-2">
+            Nome é Obrigatório!
+        </small>
+        
+    </div>
+
+    <div class="row">
+        <div class="col-md-2 text-right">
+            <button [disabled]="usuarioForm.invalid" type="button" class="btn btn-primary" (click)="incluir()"> Incluir </button> 
+        </div>
+        <div class="col-md-2 text-center">
+            <button [disabled]="usuarioForm.invalid" type="button" class="btn btn-primary" (click)="alterar()"> Alterar </button>
+        </div>
+        <div class="col-md-2 text-left">
+            <button [disabled]="usuarioForm.invalid" type="button" class="btn btn-primary" (click)="excluir()"> Excluir </button> 
+        </div>
+
+        <div class="col-md-6 text-center">
+            <button type="button" class="btn btn-primary" (click)="menu()"> Menu </button> 
+        </div>
+
+    </div>
+
+</form>
