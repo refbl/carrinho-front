@@ -20,10 +20,14 @@ export class UsuarioComponent  implements OnInit{
 
       console.log(http);
   
-      const observable = http.get<Object[]>( API_URL + '/usuario');
-      observable.subscribe(usuarios => {console.log(usuarios); this.usuarios = usuarios; console.log(this.usuarios)});
+      this.consultaUsuarioBackend();
   
     }
+
+  private consultaUsuarioBackend() {
+    const observable = this.http.get<Object[]>(API_URL + '/usuario');
+    observable.subscribe(usuarios => { console.log(usuarios); this.usuarios = usuarios; console.log(this.usuarios); });
+  }
 
     ngOnInit(): void {
         this.usuarioForm = this.formBuilder.group({
@@ -45,7 +49,11 @@ export class UsuarioComponent  implements OnInit{
         console.log(this.http);
 
         this.http.post(API_URL + '/usuario', { nome, email } ).subscribe(
-          () => console.log('Incluido com sucesso'),
+          () => {
+            console.log('Incluido com sucesso');
+            this.consultaUsuarioBackend();
+            this.usuarioForm.reset();
+          },
           err => {
               console.log(err);
               this.usuarioForm.reset();
@@ -81,7 +89,12 @@ export class UsuarioComponent  implements OnInit{
           console.log('ID --> ' + id);
 
           this.http.patch(API_URL + '/usuario/' + id , { nome, email } ).subscribe(
-            () => console.log('Alterado com sucesso'),
+            () => {
+              console.log('Alterado com sucesso');
+              this.consultaUsuarioBackend();
+              this.usuarioForm.reset();
+            },
+
             err => {
                 console.log(err);
                 this.usuarioForm.reset();
@@ -115,7 +128,11 @@ export class UsuarioComponent  implements OnInit{
         console.log('ID --> ' + id);
 
         this.http.delete(API_URL + '/usuario/' + id).subscribe(
-          () => console.log('Excluido com sucesso'),
+          () => {
+            console.log('Excluido com sucesso');
+            this.consultaUsuarioBackend();
+            this.usuarioForm.reset();
+          },
           err => {
               console.log(err);
               this.usuarioForm.reset();

@@ -12,9 +12,8 @@
                 *ngIf="carrinhoForm.get('email').errors?.required"
                 class="text-danger d-block mt-2">
                 E-mail do Cliente é Obrigatório!
-            </small>    
-
-
+            </small>  
+            
     </div>
     <br>
     <div class="row">
@@ -25,10 +24,10 @@
         <div class="col-md-6 text-center">
            <button type="button" class="btn btn-primary" (click)="menu()"> Menu </button> 
         </div>
-    
+
     </div>
     <br>
-    
+
      <p class="bg-info"> &nbsp; </p>
 
      <div class="form-group" *ngIf="carrinhoEncontrado">
@@ -69,15 +68,15 @@
 
 
     <div class="form-group" *ngIf="clienteEncontrado">
-
+        
         <div class="form-group">
-            <label for="item">
-                Itens
+            <label for="selItem">
+                Selecione Item abaixo para Adicionar ou Remover do Carrinho
             </label>
 
-            <select class="form-control" id="selItem" >
+            <select class="form-control"  id="selItem" formControlName="selItem" >
                 <option  value=''></option> 
-                <option *ngFor='let item of itens' value='{{ item.id }}'> {{ item.nome }} - {{ item.valor }}</option>
+                <option *ngFor="let item of itens" [value]="item.id"> {{ item.nome }} - {{ item.valor }}</option>
             </select>
         </div>
 

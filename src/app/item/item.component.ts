@@ -20,10 +20,14 @@ export class ItemComponent  implements OnInit{
 
       console.log(http);
   
-      const observable = http.get<Object[]>( API_URL + '/item');
-      observable.subscribe(itens => {console.log(itens); this.itens = itens; console.log(this.itens)});
+      this.consultarItemBackend();
   
     }
+
+  private consultarItemBackend() {
+    const observable = this.http.get<Object[]>(API_URL + '/item');
+    observable.subscribe(itens => { console.log(itens); this.itens = itens; console.log(this.itens); });
+  }
 
     ngOnInit(): void {
         this.itemForm = this.formBuilder.group({
@@ -45,14 +49,16 @@ export class ItemComponent  implements OnInit{
         console.log(this.http);
 
         this.http.post(API_URL + '/item', { nome, valor } ).subscribe(
-          () => console.log('Incluido com sucesso'),
+          () => {
+            console.log('Incluido com sucesso');
+            this.consultarItemBackend();
+            this.itemForm.reset();
+          },
           err => {
               console.log(err);
               this.itemForm.reset();
           }
       );
-      this.itemForm.reset();
-  
     }
 
     alterar() {
@@ -80,13 +86,21 @@ export class ItemComponent  implements OnInit{
           console.log('ID --> ' + id);
 
           this.http.patch(API_URL + '/item/' + id , { nome, valor } ).subscribe(
-            () => console.log('Alterado com sucesso'),
+            () =>{
+              console.log('Alterado com sucesso');
+              this.consultarItemBackend();
+              this.itemForm.reset();
+            },
             err => {
                 console.log(err);
                 this.itemForm.reset();
             });
  
         });
+        this.consultarItemBackend();
+        this.itemForm.reset();
+        
+        
 
     }
 
@@ -114,14 +128,19 @@ export class ItemComponent  implements OnInit{
         console.log('ID --> ' + id);
 
         this.http.delete(API_URL + '/item/' + id).subscribe(
-          () => console.log('Excluido com sucesso'),
+          () => {
+            console.log('Excluido com sucesso');
+            this.consultarItemBackend();
+            this.itemForm.reset();
+
+          },
           err => {
               console.log(err);
               this.itemForm.reset();
           });
 
       });
-
+      this.consultarItemBackend();
     }
 
     menu (){

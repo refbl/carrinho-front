@@ -17,6 +17,8 @@ export class CarrinhoComponent  implements OnInit{
     carrinhoEncontrado = false;
     clienteEncontrado = false;
     itens:  Object[] = [];
+    carrinho: Object = null; 
+    usuario: Object = null; 
 
     constructor(
       private http: HttpClient,
@@ -32,7 +34,8 @@ export class CarrinhoComponent  implements OnInit{
 
     ngOnInit(): void {
         this.carrinhoForm = this.formBuilder.group({
-          email: ['', [Validators.required ,Validators.email] ]
+          email: ['', [Validators.required ,Validators.email] ],
+          selItem: ['']
 
         });
     }
@@ -61,9 +64,9 @@ export class CarrinhoComponent  implements OnInit{
         console.log(usuarios); 
         this.usuarios = usuarios; 
         console.log(this.usuarios);
-        const usuario = this.usuarios[0];
+        this.usuario = this.usuarios[0];
         
-        if (usuario != null){
+        if (this.usuario != null){
            console.log('Usuario Encontrado.. Vai Consultar Carrinho');
 
            console.log(API_URL + '/carrinho?email=' + email);
@@ -76,9 +79,9 @@ export class CarrinhoComponent  implements OnInit{
                 console.log(carrinhos); 
                 this.carrinhos = carrinhos; 
                 console.log(this.carrinhos);
-                const carrinho = this.carrinhos[0];  
+                this.carrinho = this.carrinhos[0];  
 
-                if (carrinho != null){
+                if (this.carrinho != null){
                   console.log('Carrinho Encontrado.. Vai formatar Lista Itens');
                   
                   this.itensCarrinho = (<any>this.carrinhos[0]).itens;
@@ -87,6 +90,7 @@ export class CarrinhoComponent  implements OnInit{
                   console.log(this.itensCarrinho);
 
                 } else {
+                  this.itensCarrinho = null;
                   console.log('Carrinho não Encontrado..');                  
                 }
                 
@@ -98,30 +102,103 @@ export class CarrinhoComponent  implements OnInit{
           console.log('Usuario não Encontrado..');
         }
 
-        //const id =  (<any>this.usuarios[0]).id;
-        //console.log('ID --> ' + id);
-
-        //this.http.patch(API_URL + '/item/' + id , { nome, valor } ).subscribe(
-        //  () => console.log('Alterado com sucesso'),
-        //  err => {
-        //      console.log(err);
-        //      this.itemForm.reset();
-        //  });
-
       });
   }
 
   adicionarItem(){
     console.log('Adicionar Item..');
-
     const item = this.carrinhoForm.get('selItem').value;
-
     console.log('Item: ' + item);
+    
+    this.carrinho = this.carrinhos[0];  
+
+    // Solicita Criaçao do Carrinho
+    if(this.carrinho == null){
 
 
+      console.log("1...." + + this.usuario);
+      console.log(API_URL + '/carrinho');
+      this.http.post(API_URL + '/carrinho', this.usuario).subscribe(
+      () => {
+        console.log('Incluido com sucesso ..........');
+
+        console.log("2....." + (<any>this.usuario).email + API_URL + '/carrinho?email=' + (<any>this.usuario).email);
+
+        // Obtem Id Carrinho
+        this.http.get<Object[]>( API_URL + '/carrinho?email=' + (<any>this.usuario).email).subscribe(carrinhos => {
+            console.log(carrinhos); 
+            this.carrinhos = carrinhos; 
+            console.log(this.carrinhos);
+            this.carrinho = this.carrinhos[0] 
+          
+            console.log('Item quando criou Carrinho +++++++ ' + item + ' Carrinho: ' + (<any>this.carrinho).id);
+     
+            if (item != null ){
+               console.log("3");
+               console.log(API_URL + '/carrinho/' + (<any>this.carrinho).id + '/item/' + item);
+               this.http.post(API_URL + '/carrinho/' + (<any>this.carrinho).id + '/item/' + item, null).subscribe(
+                () => console.log('Incluido com sucesso'),
+                err => {
+                    console.log(err);
+                    this.carrinhoForm.reset();
+                  }
+        
+               );
+            }
+          
+          
+          });
+      },
+      err => {
+           console.log(err);
+           this.carrinhoForm.reset();
+      });
+
+
+    } else {
+
+      console.log('Item quando tem Carrinho.......: ' + item + 'Carrinho: ' + (<any>this.carrinho).id);
+     
+      if (item != null ){
+         console.log("3");
+         console.log(API_URL + '/carrinho/' + (<any>this.carrinho).id + '/item/' + item);
+         this.http.post(API_URL + '/carrinho/' + (<any>this.carrinho).id + '/item/' + item, null).subscribe(
+          () => console.log('Incluido com sucesso'),
+          err => {
+              console.log(err);
+              this.carrinhoForm.reset();
+            }
+  
+         );
+      }
+      this.cliente();
+
+    }
+     
+
+
+    //this.carrinhoForm.reset();
   }
 
   removerItem(){
-    console.log('Remover Item..');
+    console.log('Remover Item.');
+    const item = this.carrinhoForm.get('selItem').value;
+    console.log('Item: ' + item);
+    const carrinho = this.carrinhos[0];  
+
+    if (carrinho != null && item != null ){
+       console.log(API_URL + '/carrinho/' + (<any>carrinho).id + '/item/' + item);
+       this.http.delete(API_URL + '/carrinho/' + (<any>carrinho).id + '/item/' + item).subscribe(
+        () => console.log('Item Excluido com sucesso'),
+        err => {
+            console.log(err);
+            this.carrinhoForm.reset();
+          }
+       );
+    }
+    this.cliente();
+    //this.carrinhoForm.reset();
+
+
   }
 }
