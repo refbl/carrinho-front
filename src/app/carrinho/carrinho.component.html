@@ -17,7 +17,7 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-md-6 text-center">
+        <div class="col-md-6 text-center" *ngIf="!compraFechada">
            <button [disabled]="carrinhoForm.invalid" type="button" class="btn btn-primary" (click)="cliente()"> Cliente </button> 
         </div>
 
@@ -30,7 +30,7 @@
 
      <p class="bg-info"> &nbsp; </p>
 
-     <div class="form-group" *ngIf="carrinhoEncontrado">
+     <div class="form-group" *ngIf="carrinhoEncontrado && !compraFechada">
         <table class='table table-striped'>
             <tbody class="text-center">
                 <tr>
@@ -57,7 +57,7 @@
                 
                 <tr *ngFor='let itemCarrinho of itensCarrinho'>
                     <td>{{ itemCarrinho.nome }}</td>
-                    <td>{{ itemCarrinho.valor }}</td>
+                    <td>US$ {{ itemCarrinho.valor | number:'1.2-2' }}</td>
                 </tr>
             </tbody>
         </table>
@@ -67,7 +67,7 @@
      
 
 
-    <div class="form-group" *ngIf="clienteEncontrado">
+    <div class="form-group" *ngIf="clienteEncontrado && !compraFechada">
         
         <div class="form-group">
             <label for="selItem">
@@ -76,7 +76,7 @@
 
             <select class="form-control"  id="selItem" formControlName="selItem" >
                 <option  value=''></option> 
-                <option *ngFor="let item of itens" [value]="item.id"> {{ item.nome }} - {{ item.valor }}</option>
+                <option *ngFor="let item of itens" [value]="item.id"> {{ item.nome }} - US$ {{ item.valor | number:'1.2-2' }}</option>
             </select>
         </div>
 
@@ -91,9 +91,50 @@
             <div class="col-md-3 text-center">
                 <button type="button" class="btn btn-primary" (click)="removerItem()"> Remover Item </button> 
             </div>
-        
+        </div>
+    </div>
+
+    <div class="row" *ngIf="clienteEncontrado && !compraFechada">
+        <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-primary" (click)="fecharCompra()"> FecharCompra </button> 
+        </div>
+    </div>
+
+    <div class="form-group" *ngIf="compraFechada">
+        <h3 class="formGroupExampleInput text-center"> Resumo da Compra </h3>
+        <table class='table table-striped'>
+            <tbody class="text-center">
+                <tr>
+                    <th> Nome </th>
+                    <th> Email </th>
+                    <th> ID Carrinho</th>
+                </tr>
+
+                <tr *ngFor='let carrinho of carrinhos'>
+                    <td>{{ carrinho.usuario.nome }}</td>
+                    <td>{{ carrinho.usuario.email }}</td>
+                    <td>{{ carrinho.id }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-group" *ngIf="compraFechada">
+            <table class='table table-striped'>
+                <tbody class="text-center">
+                    <tr>
+                        <th> Item </th>
+                        <th> Quantidade </th>
+                        <th> Valor </th>
+                    </tr>
+    
+                    <tr *ngFor='let itemComprado of itensComprados'>
+                        <td>{{ itemComprado.item.nome }}</td>
+                        <td>{{ itemComprado.quantidade }}</td>
+                        <td>US$ {{ itemComprado.valorTotal | number:'1.2-2' }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-
-    </div>
 </form>

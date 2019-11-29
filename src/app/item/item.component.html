@@ -12,7 +12,7 @@
                 
                 <tr *ngFor='let item of itens'>
                     <td>{{ item.nome }}</td>
-                    <td>{{ item.valor }}</td>
+                    <td>{{ item.valor | number:'1.2-2' }}</td>
                     <td>{{ item.id }}</td>
                 </tr>
             </tbody>
@@ -30,31 +30,25 @@
     </div>
 
     <div class="form-group">
-        <label for="valor">
-            Informe o nome do Item
-        </label>
         <input
             class="form-control" 
             formControlName="nome"
-            placeholder="Descrição do Item"
+            placeholder="Nome do Item (Case Sensitive)"
             autofocus>  
 
         <small
             *ngIf="itemForm.get('nome').errors?.required"
             class="text-danger d-block mt-2">
-            Descrição do Item é Obrigatória!
+            Nome do Item é Obrigatório!
         </small>
     </div>
 
     <div class="form-group">
-        <label for="valor">
-           Informe o Valor do Item
-        </label>
         <input 
             type="number"
             class="form-control" 
             formControlName="valor" 
-            placeholder="valor" >
+            placeholder="valor do Item US$ formato 0.00" >
 
             <small
             *ngIf="itemForm.get('valor').errors?.required"

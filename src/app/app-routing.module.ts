@@ -25,8 +25,8 @@ const routes: Routes = [
     },
     {
       path: 'carrinho',
-      component: CarrinhoComponent
-    }
+      component: CarrinhoComponent,
+    },
 ];
 
 @NgModule({

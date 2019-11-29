@@ -13,9 +13,12 @@ export class CarrinhoComponent  implements OnInit{
     usuarios: Object[] = [];
     carrinhos_aux: Object[] = [];
     itensCarrinho: Object[] = [];
+    carrinhosComprados: Object[] = [];
+    itensComprados: Object[] = [];
     carrinhoForm: FormGroup;
     carrinhoEncontrado = false;
     clienteEncontrado = false;
+    compraFechada     = false;
     itens:  Object[] = [];
     carrinho: Object = null; 
     usuario: Object = null; 
@@ -95,13 +98,9 @@ export class CarrinhoComponent  implements OnInit{
                 }
                 
            });
-
-
         } else {
-
           console.log('Usuario não Encontrado..');
         }
-
       });
   }
 
@@ -114,15 +113,11 @@ export class CarrinhoComponent  implements OnInit{
 
     // Solicita Criaçao do Carrinho
     if(this.carrinho == null){
-
-
       console.log("1...." + + this.usuario);
       console.log(API_URL + '/carrinho');
       this.http.post(API_URL + '/carrinho', this.usuario).subscribe(
       () => {
-        console.log('Incluido com sucesso ..........');
-
-        console.log("2....." + (<any>this.usuario).email + API_URL + '/carrinho?email=' + (<any>this.usuario).email);
+        console.log("Incluido com Sucesso....." + (<any>this.usuario).email + API_URL + '/carrinho?email=' + (<any>this.usuario).email);
 
         // Obtem Id Carrinho
         this.http.get<Object[]>( API_URL + '/carrinho?email=' + (<any>this.usuario).email).subscribe(carrinhos => {
@@ -137,7 +132,9 @@ export class CarrinhoComponent  implements OnInit{
                console.log("3");
                console.log(API_URL + '/carrinho/' + (<any>this.carrinho).id + '/item/' + item);
                this.http.post(API_URL + '/carrinho/' + (<any>this.carrinho).id + '/item/' + item, null).subscribe(
-                () => console.log('Incluido com sucesso'),
+                () => { console.log('Incluido com sucesso');
+                       this.cliente(); 
+                      },
                 err => {
                     console.log(err);
                     this.carrinhoForm.reset();
@@ -145,8 +142,6 @@ export class CarrinhoComponent  implements OnInit{
         
                );
             }
-          
-          
           });
       },
       err => {
@@ -163,7 +158,10 @@ export class CarrinhoComponent  implements OnInit{
          console.log("3");
          console.log(API_URL + '/carrinho/' + (<any>this.carrinho).id + '/item/' + item);
          this.http.post(API_URL + '/carrinho/' + (<any>this.carrinho).id + '/item/' + item, null).subscribe(
-          () => console.log('Incluido com sucesso'),
+          () => {
+                console.log('Incluido com sucesso');
+                this.cliente();
+          },
           err => {
               console.log(err);
               this.carrinhoForm.reset();
@@ -171,13 +169,7 @@ export class CarrinhoComponent  implements OnInit{
   
          );
       }
-      this.cliente();
-
     }
-     
-
-
-    //this.carrinhoForm.reset();
   }
 
   removerItem(){
@@ -187,18 +179,47 @@ export class CarrinhoComponent  implements OnInit{
     const carrinho = this.carrinhos[0];  
 
     if (carrinho != null && item != null ){
-       console.log(API_URL + '/carrinho/' + (<any>carrinho).id + '/item/' + item);
+       console.log('Vai Deletar ....... ->>>>' + API_URL + '/carrinho/' + (<any>carrinho).id + '/item/' + item);
        this.http.delete(API_URL + '/carrinho/' + (<any>carrinho).id + '/item/' + item).subscribe(
-        () => console.log('Item Excluido com sucesso'),
+        () => {
+          console.log('Excluido com sucesso');
+          this.cliente();
+        },
+
         err => {
             console.log(err);
             this.carrinhoForm.reset();
           }
        );
     }
-    this.cliente();
+    //this.cliente();
     //this.carrinhoForm.reset();
-
-
   }
+
+  fecharCompra(){
+    console.log('Fechar Compra..');
+
+    console.log(this.http + ' ' + this.carrinho);
+      
+    const observable = this.http.get<Object[]>( API_URL + '/carrinho/' + (<any>this.carrinho).id + '/fecharcompra');
+      
+    observable.subscribe(carrinhosComprados => {
+         console.log(carrinhosComprados); 
+         this.carrinhosComprados = carrinhosComprados; 
+         console.log(this.carrinhosComprados);
+         this.carrinho = (<any>this.carrinhosComprados[0]).carrinho;  
+         this.itensComprados = (<any>this.carrinhosComprados[0]).itensComprados;
+
+         if (this.carrinho != null){
+           console.log('Carrinho Comprado Encontrado......');
+           
+           this.compraFechada = true;
+
+         } else {
+           this.itensCarrinho = null;
+           console.log('Carrinho não Encontrado..');                  
+         }
+      });
+      console.log("*******");
+   }
 }
